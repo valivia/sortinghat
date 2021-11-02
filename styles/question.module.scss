@@ -1,5 +1,66 @@
 .main {
     display: flex;
     flex-direction: column;
+    align-items: center;
     padding: 1%;
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    & > button {
+        margin: 0 10%;
+        background-color: #232323;
+        color: inherit;
+        border: none;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #000000;
+        }
+    }
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.option {
+    display: none;
+
+
+    &:checked ~ label {
+        color: rgb(216, 35, 35);
+    }
+}
+
+.label {
+    margin: 10vh;
+
+    &:hover {
+        color: rgb(186, 186, 166);
+    }
+}
+
+.button {
+    background-color: #000000;
+    border: none;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
 }

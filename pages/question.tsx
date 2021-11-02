@@ -1,58 +1,94 @@
 import type { GetStaticProps } from "next";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter, withRouter } from "next/router";
 import styles from "../styles/question.module.scss";
 import Head from "next/head";
 import React from "react";
 import Footer from "../components/footer.module";
 import Layout from "../components/layout.module";
 import question from "../types/question";
+import cookies, { CookieAttributes } from "js-cookie";
 
 const api = process.env.NEXT_PUBLIC_API_SERVER as string;
+const cookieConfig = { sameSite: "Strict", secure: true } as CookieAttributes;
 
-export default class Question extends React.Component<{ questions: question[] }, state> {
+class Question extends React.Component<props, state> {
+
   state = {
-    index: 2,
-    answers: []
+    index: 0,
+    answers: new Map(),
   }
 
-  constructor(props: { questions: question[] }) {
+  constructor(props: props) {
     super(props)
+
+    let cookie = cookies.get("answers")
+    if (!cookie) return;
+
+    cookie = JSON.parse(cookie);
+    if (!cookie) {
+      cookies.remove("answers");
+      return;
+    }
+
+    const map = new Map(Object.entries(cookie));
+
+    console.log(this.state);
   }
 
   public submit = async (): Promise<void> => {
-    const response = await fetch(api, {
+    const answers = [] as string[];
+
+    this.state.answers.forEach(x => answers.push(x.value));
+
+    const response = await fetch(`${api}/setResult`, {
       method: "POST",
       mode: 'cors',
-      credentials: 'include',
       headers: new Headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify(this.state.answers)
+      body: JSON.stringify(answers)
     })
 
-    if (response.ok) return;
+    const temp = {
+      percentages: {
+        BDAM: 0.6,
+        FICT: 0.1,
+        ES: 0.4,
+        IAT: 0.9
+      }
+    }
+
+    if (response.ok) {
+      cookies.set("result", JSON.stringify(temp), cookieConfig)
+      this.props.router.push("/result");
+      return;
+    }
   }
 
   public handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.name)
+    const target = e.currentTarget;
+    const answers = this.state.answers;
+    answers.set(target.alt, { name: target.id, value: target.value })
   }
 
   public changeIndex = (x: number) => {
+    console.log(this.state.answers)
     const index = this.state.index;
-
-    if (index >= this.props.questions.length - 1 && x > 0) return;
-    if (index <= 0 && x < 0) return;
-
+    if ((index >= this.props.questions.length - 1 && x > 0) || (index <= 0 && x < 0)) return;
     this.setState({ index: index + x });
   }
 
   public next = () => {
     this.changeIndex(1);
+    const cookieData = JSON.stringify(Object.fromEntries(this.state.answers));
+    cookies.set("answers", cookieData, cookieConfig)
   }
-  public back = () => { this.changeIndex(-1); }
 
   public render = () => {
 
     const questions = this.props.questions
     const currentQuestion = questions[this.state.index]
+    const currentAnswer = this.state.answers.size !== 0 ?
+      this.state.answers.get(currentQuestion.id) :
+      undefined
 
     return (
       <>
@@ -63,18 +99,34 @@ export default class Question extends React.Component<{ questions: question[] },
         <Layout>
           <main className={styles.main}>
             <h2>{currentQuestion.question}</h2>
-            {currentQuestion.options.map(data => (
-              <><input
-                type="radio"
-                name={data.name}
-                onChange={this.handleChange}
-                checked={true}></input>
-                <label>{data.name}</label></>
-            )
-            )}
-            <button onClick={this.next}>Next</button>
-            <button onClick={this.back}>Back</button>
-            {this.state.index}
+
+            <menu className={styles.buttons}>
+              <button onClick={() => this.changeIndex(-1)}>Back</button>
+              {this.state.index + 1 == this.props.questions.length ?
+                <button onClick={this.submit}>submit</button> :
+                <button onClick={this.next}>Next</button>
+              }
+            </menu>
+
+            <div className={styles.options}>
+              {currentQuestion.options.map(data =>
+                <div key={data.name}>
+                  <input
+                    type="radio"
+                    name="answer"
+                    className={styles.option}
+                    alt={currentQuestion.id}
+                    value={data.value}
+                    id={data.name}
+                    onChange={this.handleChange}
+                    defaultChecked={currentAnswer ? currentAnswer.name == data.name : false}
+                  />
+                  <label className={styles.label} htmlFor={data.name}>{data.name}</label>
+                </div>
+              )}
+            </div>
+
+            {this.state.index + 1} / {this.props.questions.length}
           </main>
         </Layout>
 
@@ -84,12 +136,13 @@ export default class Question extends React.Component<{ questions: question[] },
   }
 }
 
+export default withRouter(Question)
+
 
 export const getStaticProps: GetStaticProps = async () => {
-  /*
-  const questionData = await fetch(api);
-  const questions = await questionData.json() as question[];
-  */
+  // const questionData = await fetch(`${api}/getQuestions`);
+  // if (!questionData) throw "could not load questions"
+  // let questions = await questionData.json() as question[];
 
   let questions = [
     {
@@ -121,6 +174,7 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   ] as question[]
 
+
   if (!questions) return { notFound: true };
 
   questions = questions.map((x, i) => { x.id = `question${i}`; return x });
@@ -130,7 +184,12 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
+interface props {
+  router: NextRouter;
+  questions: question[]
+}
+
 interface state {
   index: number;
-  answers: string[];
+  answers: Map<string, string>
 }
