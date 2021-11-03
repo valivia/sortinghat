@@ -1,11 +1,6 @@
 export default interface result {
-    percentages: percentages;
-
-}
-
-interface percentages {
-    BDAM: number,
-    FICT: number,
-    ES: number,
-    IAT: number
+    percentage: number,
+    max: number,
+    score: number,
+    name: string
 }

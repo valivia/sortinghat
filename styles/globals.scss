@@ -4,7 +4,6 @@
   font-display: swap;
 }
 
-
 $text: rgb(181, 166, 145);
 
 html,
@@ -32,4 +31,28 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+button {
+  margin: 0 10%;
+  background-color: #232323;
+  color: inherit;
+  border: none;
+  border-radius: 7px;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #000000;
+  }
+
+  &:disabled {
+    background-color: #000000;
+    cursor: not-allowed;
+  }
 }

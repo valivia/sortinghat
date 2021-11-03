@@ -8,6 +8,9 @@ export default function Layout({ children }: { children: ReactNode }): JSX.Eleme
 
     return (
         <div className={styles.main}>
+            <div className={styles.raven}>
+                <Image src={raven} alt=""></Image>
+            </div>
             <menu className={styles.navigationWrapper}>
                 <Link href="/">
                     <a>home</a>
@@ -15,11 +18,11 @@ export default function Layout({ children }: { children: ReactNode }): JSX.Eleme
             </menu>
             <div className={styles.contentWrapper}>
                 <div className={styles.header}>
-                    <Image src={raven} alt=""></Image>
+                    <div className={styles.headerBottom}></div>
                 </div>
-                <div className={styles.content}>
+                <main className={styles.content}>
                     {children}
-                </div>
+                </main>
             </div>
         </div>
     );

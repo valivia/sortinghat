@@ -6,7 +6,7 @@ export default function Footer(): JSX.Element {
 
     return (
         <footer className={styles.footer}>
-            <a href={`${cdn}/file/s/sad.mp4`} target="_blank" rel="noreferrer">beans</a>
+            <a href={`https://art.xayania.com/file/s/sad.mp4`} target="_blank" rel="noreferrer">beans</a>
         </footer >
     );
 }

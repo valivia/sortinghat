@@ -33,19 +33,43 @@
     height: 50vh;
     background-color: burlywood;
     display: flex;
-    align-items: flex-start;
+    flex-direction: column-reverse;
 
     background: black url("/wallpaper2.jpg") no-repeat center;
     background-size: 100vw;
 }
 
 .raven {
-    align-self: flex-end;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 .content {
     max-width: 100vw;
     height: 70vh;
     color: wheat;
-    background-color: rgb(61, 61, 61);
+    background-color: rgb(19, 19, 19);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1%;
+
+    & > h2 {
+        text-align: center;
+    }
+}
+
+.headerBottom {
+    width: 100%;
+    height: 20%;
+    background: rgb(19, 19, 19);
+    background: linear-gradient(
+        0deg,
+        rgba(19, 19, 19, 1) 0%,
+        rgba(19, 19, 19, 1) 6%,
+        rgba(19, 19, 19, 1) 39%,
+        rgba(19, 19, 19, 0) 100%
+    );
 }
