@@ -3,4 +3,4 @@ export default interface result {
     max: number,
     score: number,
     name: string
-}
+};

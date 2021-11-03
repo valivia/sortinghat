@@ -1,13 +1,14 @@
 import { NextRouter } from "next/router";
 import question, { option } from "./question";
 
-export interface props {
+export interface Props {
     router: NextRouter;
     questions: question[]
-}
+};
 
-export interface state {
+export interface State {
     index: number;
     answers: Map<string, option>;
     loading: boolean;
-}
+    reachedEnd: boolean;
+};

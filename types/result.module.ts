@@ -1,12 +1,12 @@
 import { NextRouter } from "next/router";
 import result from "./result";
 
-export interface state {
+export interface State {
     invalid: boolean;
     loading: boolean;
-    data: result[];
-}
+    data?: result[];
+};
 
-export interface props {
+export interface Props {
     router: NextRouter;
-}
+};

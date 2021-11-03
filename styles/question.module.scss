@@ -20,13 +20,13 @@
 .option {
     display: none;
 
-    &:checked ~ label {
+    &:checked ~ div {
         color: rgb(216, 35, 35);
     }
 }
 
 .label {
-    width: 100vw;
+    width: 80vw;
     text-align: center;
     margin: 7px 0;
 
