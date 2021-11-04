@@ -5,9 +5,11 @@ import Head from "next/head";
 import React from "react";
 import Footer from "../components/footer.module";
 import Layout from "../components/layout.module";
-import question, { option } from "../types/question";
+import question from "../types/question";
 import cookies, { CookieAttributes } from "js-cookie";
 import { Props, State } from "../types/question.module";
+import cookieService from "../util/cookie.service";
+import { motion } from "framer-motion";
 
 const questionsPath = process.env.NEXT_PUBLIC_QUESTIONS_PATH as string;
 const resultPath = process.env.NEXT_PUBLIC_RESULT_PATH as string;
@@ -17,7 +19,7 @@ class Question extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { index: 0, answers: new Map(), loading: true, reachedEnd: false };
+    this.state = { index: 0, answers: new Map(), loading: true, reachedEnd: false, bug: false };
   }
 
   public submit = async (): Promise<void> => {
@@ -56,7 +58,7 @@ class Question extends React.Component<Props, State> {
     const index = this.state.index;
 
     if (index <= 0 && x < 0) {
-      this.props.router.push("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+      this.setState({ bug: !this.state.bug });
       return;
     }
 
@@ -66,13 +68,8 @@ class Question extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const cookie = cookies.get("answers");
-    if (!cookie) {
-      this.setState({ loading: false });
-      return;
-    }
+    const json = cookieService(cookies.get("answers"));
 
-    const json = JSON.parse(cookie);
     if (!json) {
       cookies.remove("answers");
       this.setState({ loading: false });
@@ -105,7 +102,14 @@ class Question extends React.Component<Props, State> {
           <meta name="robots" content="noindex, nofollow"></meta>
         </Head>
         <Layout>
-          <h2>{currentQuestion.question}</h2>
+          <motion.h2
+            className={this.state.bug ? styles.reverse : ""}
+            key={currentQuestion.question}
+            initial={{ x: "300px", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}>
+            {currentQuestion.question}
+          </motion.h2>
 
           <menu className={styles.buttons}>
             <button onClick={() => this.changeIndex(-1)}>Vorige</button>
@@ -120,9 +124,13 @@ class Question extends React.Component<Props, State> {
             }
           </menu>
 
-          <div className={styles.options}>
+          <div className={`${styles.options} ${styles.noselect}`}>
             {currentQuestion.options.map(data =>
-              <div key={data.name}>
+              <motion.div
+                key={data.name}
+                initial={{ x: "300px", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}>
                 <input
                   type="radio"
                   name="answer"
@@ -136,11 +144,13 @@ class Question extends React.Component<Props, State> {
                 <div className={styles.label}>
                   <label className={styles.label} htmlFor={data.name}>{data.name}</label>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
 
-          {this.state.index + 1} / {this.props.questions.length}
+          <span className={styles.pageIndex}>
+            {this.state.index + 1} / {this.props.questions.length}
+          </span>
         </Layout>
 
         <Footer />
@@ -156,8 +166,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const questionData = await fetch(questionsPath);
   if (!questionData) throw "could not load questions";
   let questions = await questionData.json() as question[];
-
-
   if (!questions) return { notFound: true };
 
   questions = questions.map((x, i) => {
@@ -165,7 +173,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return x;
   });
 
-  return {
-    props: { questions },
-  };
+  return { props: { questions } };
 };

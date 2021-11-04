@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import Link from "next/link";
 import styles from "./layout.module.scss";
 import Image from "next/image";
 import raven from "../public/raven.gif";
@@ -9,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }): JSX.Eleme
   return (
     <div className={styles.main}>
       <div className={styles.raven}>
-        <Image src={raven} alt=""></Image>
+        <Image src={raven} alt="" onClick={() => window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")}></Image>
       </div>
       <menu className={styles.navigationWrapper}></menu>
       <div className={styles.contentWrapper}>

@@ -8,6 +8,7 @@ import result from "../types/result";
 import cookies from "js-cookie";
 import ResultBar from "../components/resultBar.module";
 import { Props, State } from "../types/result.module";
+import { motion } from "framer-motion";
 
 class Result extends React.Component<Props, State> {
 
@@ -50,8 +51,12 @@ class Result extends React.Component<Props, State> {
 
     if (!data) return <></>;
 
-    console.log(data);
     data = data.sort((b, a) => a.percentage - b.percentage);
+
+    const list = {
+      visible: { opacity: 1 },
+      hidden: { opacity: 0 },
+    };
 
     return (
       <>
@@ -63,9 +68,13 @@ class Result extends React.Component<Props, State> {
         <Layout>
           <h1>Resultaten</h1>
           <p>Dit zijn de specialisaties die het beste bij jou passen!</p>
-          <div className={styles.percentages}>
-            {data.map(x => <ResultBar key={x.name} {...x} />)}
-          </div>
+          <motion.div
+            className={styles.percentages}
+            initial="hidden"
+            animate="visible"
+            variants={list}>
+            {data.map((x, index) => <ResultBar key={x.name} stat={x} index={index} />)}
+          </motion.div>
           <button className={styles.reset} onClick={this.reset}>Opnieuw</button>
         </Layout>
 

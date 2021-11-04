@@ -21,7 +21,7 @@
     display: none;
 
     &:checked ~ div {
-        color: rgb(216, 35, 35);
+        color: rgb(33, 152, 231);
     }
 }
 
@@ -34,3 +34,25 @@
         color: rgb(186, 186, 166);
     }
 }
+
+.reverse {
+    -moz-transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+}
+
+.pageIndex {
+    margin: 10px;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  

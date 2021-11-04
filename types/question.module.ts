@@ -11,4 +11,5 @@ export interface State {
     answers: Map<string, option>;
     loading: boolean;
     reachedEnd: boolean;
+    bug: boolean;
 };
