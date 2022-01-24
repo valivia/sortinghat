@@ -66,8 +66,8 @@ class Result extends React.Component<Props, State> {
           <meta name="robots" content="noindex, nofollow"></meta>
         </Head>
         <Layout>
-          <h1>Resultaten</h1>
-          <p>Dit zijn de specialisaties die het beste bij jou passen!</p>
+          <h1>Results</h1>
+          <p>These are the categories that fit you the best</p>
           <motion.div
             className={styles.percentages}
             initial="hidden"
@@ -75,7 +75,7 @@ class Result extends React.Component<Props, State> {
             variants={list}>
             {data.map((x, index) => <ResultBar key={x.name} stat={x} index={index} />)}
           </motion.div>
-          <button className={styles.reset} onClick={this.reset}>Opnieuw</button>
+          <button className={styles.reset} onClick={this.reset}>Reset</button>
         </Layout>
 
         <Footer />

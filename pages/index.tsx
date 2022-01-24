@@ -112,15 +112,15 @@ class Question extends React.Component<Props, State> {
           </motion.h2>
 
           <menu className={styles.buttons}>
-            <button onClick={() => this.changeIndex(-1)}>Vorige</button>
+            <button onClick={() => this.changeIndex(-1)}>previous</button>
             <progress
               className={styles.progress}
               max={questions.length}
               value={this.state.answers.size}>
             </progress>
             {this.state.index + 1 == this.props.questions.length ?
-              <button onClick={this.submit} disabled={this.state.answers.size !== questions.length}>verstuur</button> :
-              <button onClick={() => this.changeIndex(1)}>volgende</button>
+              <button onClick={this.submit} disabled={this.state.answers.size !== questions.length}>submit</button> :
+              <button onClick={() => this.changeIndex(1)}>next</button>
             }
           </menu>
 
